@@ -1,4 +1,6 @@
 import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.ServerSocket;
@@ -28,6 +30,24 @@ public class Receiver {
         connection.close();
 
         BufferedImage toDecode = ImageIO.read(new File("TestMessage.png"));
+
+        JFrame frame = new JFrame();
+        frame.getContentPane().setLayout(new FlowLayout());
+        frame.getContentPane().add(new JLabel((new ImageIcon(toDecode))));
+        frame.pack();
+        frame.setVisible(true);
+
+//        JFrame editorFrame = new JFrame("Image Demo");
+//        editorFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+//        ImageIcon imageIcon= new ImageIcon(toDecode);
+//        JLabel jLabel = new JLabel();
+//        jLabel.setIcon(imageIcon);
+//        editorFrame.getContentPane().add(jLabel, BorderLayout.CENTER);
+//        editorFrame.pack();
+//        editorFrame.setLocationRelativeTo(null);
+//        editorFrame.setVisible(true);
+
+
         String outputMessage = deSteganophy(toDecode);
         System.out.println(outputMessage);
     }
