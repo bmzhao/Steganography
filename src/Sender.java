@@ -1,23 +1,63 @@
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.net.Socket;
 
 /**
  * Created by Brian on 8/5/2015.
  */
-public class Test {
+public class Sender {
     public static void main(String[] args) throws Exception {
 
-        BufferedImage bufferedImage = ImageIO.read(new File("3.jpg"));
-        String messageToSend = "TRYING NEW PICTURE";
+        BufferedImage bufferedImage = ImageIO.read(new File("input.jpg"));
+        String messageToSend = "Hello Cary! Check out this amazing hidden message!\n";
+//                "A Priest was being honoured at his retirement dinner after 25 years in the parish." +
+//                "\n A leading local politician and member of the congregation was chosen to make the " +
+//                "\npresentation and to give a little speech at the dinner. However, he was delayed, so" +
+//                "\n the Priest decided to say his own few words while they waited: Thank Goodness we \n" +
+//                "Catholics have a wonderful sense of humour!\n" +
+//                "\"I got my first impression of the parish from the first confession I heard here. " +
+//                "\nI thought I had been assigned to a terrible place. The very first person who " +
+//                "\nentered my confessional told me he had stolen a television set and, when questioned\n " +
+//                "by the police, was able to lie his way out of it. He had stolen money from his parents; \n" +
+//                "embezzled from his employer; had an affair with his boss’s wife; had sex with his boss’s \n" +
+//                "17 year old daughter on numerous occasions, taken illegal drugs; had several homosexual affairs; \n" +
+//                "was arrested several times for public nudity and gave VD to his sister in-law.\n" +
+//                "I was appalled that one person could do so many awful things. But as the days went on, \n" +
+//                "I learned that my people were not all like that and I had, indeed, come to a fine parish \n" +
+//                "full of good and loving people.\"\n" +
+//                "Just as the Priest finished his talk, the politician arrived full of apologies at being late. \n" +
+//                "He immediately began to make the presentation and gave his talk:\n" +
+//                "\"I'll never forget the first day our parish Priest arrived,\" said the politician. \"In fact, \n" +
+//                "I had the honour of being the first person to go to him for confession.\"";
 
 
         BufferedImage outputImage = steganophy(bufferedImage, messageToSend);
         ImageIO.write(outputImage, "png", new File("output.png"));
 
-        BufferedImage toDecode = ImageIO.read(new File("output.png"));
-        String outputMessage = deSteganophy(toDecode);
-        System.out.println(outputMessage);
+
+        Socket connection = new Socket("192.168.2.17", 7777);
+        System.out.println("Connected to PC");
+        File toSend = new File("output.png");
+        byte[] byteArray = new byte[(int) toSend.length()];
+        BufferedInputStream bis = new BufferedInputStream(new FileInputStream(toSend));
+        BufferedOutputStream bos = new BufferedOutputStream(connection.getOutputStream());
+        bis.read(byteArray, 0, byteArray.length);
+        bos.write(byteArray, 0, byteArray.length);
+        bos.flush();
+        bos.close();
+        connection.close();
+        System.out.println("Sent File!");
+        System.exit(0);
+
+
+
+//        BufferedImage toDecode = ImageIO.read(new File("output.png"));
+//        String outputMessage = deSteganophy(toDecode);
+//        System.out.println(outputMessage);
 
     }
 
